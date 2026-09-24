@@ -1,0 +1,422 @@
+{
+  "summary": {
+    "total_revenue": 1677328.46,
+    "total_profit": 376167.48,
+    "profit_margin_pct": 22.43,
+    "total_orders": 4200,
+    "avg_order_value": 399.36,
+    "unique_customers": 160
+  },
+  "monthly_trend": [
+    {
+      "order_ym": "2023-01",
+      "revenue": 43165.27,
+      "profit": 9240.6
+    },
+    {
+      "order_ym": "2023-02",
+      "revenue": 30979.9,
+      "profit": 6551.27
+    },
+    {
+      "order_ym": "2023-03",
+      "revenue": 46507.9,
+      "profit": 10631.88
+    },
+    {
+      "order_ym": "2023-04",
+      "revenue": 31954.98,
+      "profit": 7169.51
+    },
+    {
+      "order_ym": "2023-05",
+      "revenue": 45971.07,
+      "profit": 10097.02
+    },
+    {
+      "order_ym": "2023-06",
+      "revenue": 56576.69,
+      "profit": 11727.48
+    },
+    {
+      "order_ym": "2023-07",
+      "revenue": 42645.65,
+      "profit": 8579.82
+    },
+    {
+      "order_ym": "2023-08",
+      "revenue": 45030.87,
+      "profit": 10527.37
+    },
+    {
+      "order_ym": "2023-09",
+      "revenue": 37165.19,
+      "profit": 8510.07
+    },
+    {
+      "order_ym": "2023-10",
+      "revenue": 49591.98,
+      "profit": 10218.22
+    },
+    {
+      "order_ym": "2023-11",
+      "revenue": 63026.17,
+      "profit": 15818.49
+    },
+    {
+      "order_ym": "2023-12",
+      "revenue": 73184.7,
+      "profit": 15916.9
+    },
+    {
+      "order_ym": "2024-01",
+      "revenue": 49526.32,
+      "profit": 11001.88
+    },
+    {
+      "order_ym": "2024-02",
+      "revenue": 22868.92,
+      "profit": 5671.97
+    },
+    {
+      "order_ym": "2024-03",
+      "revenue": 46056.27,
+      "profit": 11257.68
+    },
+    {
+      "order_ym": "2024-04",
+      "revenue": 40393.54,
+      "profit": 9626.64
+    },
+    {
+      "order_ym": "2024-05",
+      "revenue": 33019.71,
+      "profit": 7217.12
+    },
+    {
+      "order_ym": "2024-06",
+      "revenue": 26765.86,
+      "profit": 5691.24
+    },
+    {
+      "order_ym": "2024-07",
+      "revenue": 38270.23,
+      "profit": 8988.51
+    },
+    {
+      "order_ym": "2024-08",
+      "revenue": 47594.06,
+      "profit": 10776.3
+    },
+    {
+      "order_ym": "2024-09",
+      "revenue": 44609.73,
+      "profit": 10604.38
+    },
+    {
+      "order_ym": "2024-10",
+      "revenue": 47806.45,
+      "profit": 11876.0
+    },
+    {
+      "order_ym": "2024-11",
+      "revenue": 60206.44,
+      "profit": 13835.01
+    },
+    {
+      "order_ym": "2024-12",
+      "revenue": 82252.78,
+      "profit": 18657.79
+    },
+    {
+      "order_ym": "2025-01",
+      "revenue": 54200.72,
+      "profit": 11315.84
+    },
+    {
+      "order_ym": "2025-02",
+      "revenue": 36106.87,
+      "profit": 6688.92
+    },
+    {
+      "order_ym": "2025-03",
+      "revenue": 50035.33,
+      "profit": 10958.96
+    },
+    {
+      "order_ym": "2025-04",
+      "revenue": 50386.94,
+      "profit": 11865.41
+    },
+    {
+      "order_ym": "2025-05",
+      "revenue": 56152.21,
+      "profit": 11779.44
+    },
+    {
+      "order_ym": "2025-06",
+      "revenue": 33849.94,
+      "profit": 8752.53
+    },
+    {
+      "order_ym": "2025-07",
+      "revenue": 43970.02,
+      "profit": 10251.82
+    },
+    {
+      "order_ym": "2025-08",
+      "revenue": 31548.22,
+      "profit": 6848.03
+    },
+    {
+      "order_ym": "2025-09",
+      "revenue": 33548.02,
+      "profit": 7369.6
+    },
+    {
+      "order_ym": "2025-10",
+      "revenue": 52975.56,
+      "profit": 11556.45
+    },
+    {
+      "order_ym": "2025-11",
+      "revenue": 70719.17,
+      "profit": 16011.87
+    },
+    {
+      "order_ym": "2025-12",
+      "revenue": 58664.78,
+      "profit": 12575.46
+    }
+  ],
+  "by_region": [
+    {
+      "region": "East",
+      "revenue": 436134.88,
+      "profit": 96504.63,
+      "margin_pct": 22.13
+    },
+    {
+      "region": "Central",
+      "revenue": 434595.38,
+      "profit": 98095.53,
+      "margin_pct": 22.57
+    },
+    {
+      "region": "South",
+      "revenue": 412184.92,
+      "profit": 89589.87,
+      "margin_pct": 21.74
+    },
+    {
+      "region": "West",
+      "revenue": 394413.28,
+      "profit": 91977.45,
+      "margin_pct": 23.32
+    }
+  ],
+  "by_category": [
+    {
+      "category": "Technology",
+      "sub_category": "Phones",
+      "revenue": 248701.0,
+      "profit": 60487.81,
+      "units_sold": 683
+    },
+    {
+      "category": "Technology",
+      "sub_category": "Accessories",
+      "revenue": 238410.08,
+      "profit": 58216.5,
+      "units_sold": 640
+    },
+    {
+      "category": "Technology",
+      "sub_category": "Copiers",
+      "revenue": 237934.31,
+      "profit": 59516.97,
+      "units_sold": 645
+    },
+    {
+      "category": "Technology",
+      "sub_category": "Machines",
+      "revenue": 227943.2,
+      "profit": 53296.29,
+      "units_sold": 613
+    },
+    {
+      "category": "Furniture",
+      "sub_category": "Furnishings",
+      "revenue": 151568.95,
+      "profit": 20062.82,
+      "units_sold": 686
+    },
+    {
+      "category": "Furniture",
+      "sub_category": "Chairs",
+      "revenue": 142848.15,
+      "profit": 18306.87,
+      "units_sold": 660
+    },
+    {
+      "category": "Furniture",
+      "sub_category": "Bookcases",
+      "revenue": 121296.11,
+      "profit": 16619.72,
+      "units_sold": 580
+    },
+    {
+      "category": "Furniture",
+      "sub_category": "Tables",
+      "revenue": 112801.69,
+      "profit": 13822.59,
+      "units_sold": 547
+    },
+    {
+      "category": "Office Supplies",
+      "sub_category": "Art",
+      "revenue": 42244.29,
+      "profit": 16467.01,
+      "units_sold": 1336
+    },
+    {
+      "category": "Office Supplies",
+      "sub_category": "Paper",
+      "revenue": 39605.01,
+      "profit": 15216.19,
+      "units_sold": 1210
+    },
+    {
+      "category": "Office Supplies",
+      "sub_category": "Storage",
+      "revenue": 38683.25,
+      "profit": 14755.01,
+      "units_sold": 1244
+    },
+    {
+      "category": "Office Supplies",
+      "sub_category": "Labels",
+      "revenue": 38298.35,
+      "profit": 14941.27,
+      "units_sold": 1192
+    },
+    {
+      "category": "Office Supplies",
+      "sub_category": "Binders",
+      "revenue": 36994.07,
+      "profit": 14458.43,
+      "units_sold": 1166
+    }
+  ],
+  "top_customers": [
+    {
+      "customer_name": "Maria Brown",
+      "segment": "Consumer",
+      "revenue": 16994.51,
+      "profit": 3747.1,
+      "orders": 19
+    },
+    {
+      "customer_name": "Maria Kim",
+      "segment": "Consumer",
+      "revenue": 13271.0,
+      "profit": 2884.73,
+      "orders": 18
+    },
+    {
+      "customer_name": "Wei Diaz",
+      "segment": "Consumer",
+      "revenue": 12522.47,
+      "profit": 2394.61,
+      "orders": 21
+    },
+    {
+      "customer_name": "Priya Khan",
+      "segment": "Consumer",
+      "revenue": 12247.44,
+      "profit": 2355.45,
+      "orders": 18
+    },
+    {
+      "customer_name": "Noah Diaz",
+      "segment": "Consumer",
+      "revenue": 12107.73,
+      "profit": 2945.75,
+      "orders": 15
+    },
+    {
+      "customer_name": "Sofia Nguyen",
+      "segment": "Corporate",
+      "revenue": 11428.35,
+      "profit": 2391.88,
+      "orders": 13
+    },
+    {
+      "customer_name": "Omar Brown",
+      "segment": "Consumer",
+      "revenue": 10721.95,
+      "profit": 2849.73,
+      "orders": 20
+    },
+    {
+      "customer_name": "Wei Rossi",
+      "segment": "Consumer",
+      "revenue": 10617.7,
+      "profit": 2426.07,
+      "orders": 19
+    },
+    {
+      "customer_name": "Priya Rossi",
+      "segment": "Consumer",
+      "revenue": 10439.46,
+      "profit": 2305.01,
+      "orders": 11
+    },
+    {
+      "customer_name": "Yuki Brown",
+      "segment": "Consumer",
+      "revenue": 10244.5,
+      "profit": 2495.04,
+      "orders": 18
+    }
+  ],
+  "segment_mix": [
+    {
+      "segment": "Consumer",
+      "revenue": 857729.65,
+      "pct_of_revenue": 51.1
+    },
+    {
+      "segment": "Corporate",
+      "revenue": 530085.47,
+      "pct_of_revenue": 31.6
+    },
+    {
+      "segment": "Home Office",
+      "revenue": 289513.34,
+      "pct_of_revenue": 17.3
+    }
+  ],
+  "discount_impact": [
+    {
+      "discount_band": "No discount",
+      "avg_margin_pct": 37.08,
+      "revenue": 839117.65
+    },
+    {
+      "discount_band": "Low (<=15%)",
+      "avg_margin_pct": 28.21,
+      "revenue": 563251.54
+    },
+    {
+      "discount_band": "Medium (16-30%)",
+      "avg_margin_pct": 14.43,
+      "revenue": 236591.57
+    },
+    {
+      "discount_band": "High (>30%)",
+      "avg_margin_pct": -15.49,
+      "revenue": 38367.7
+    }
+  ]
+}

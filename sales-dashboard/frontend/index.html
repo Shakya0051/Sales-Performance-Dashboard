@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Sales Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F1ECE1;
+    --paper-2:#E7E0D1;
+    --ink:#20261F;
+    --ink-soft:#5B6358;
+    --rule:#C9C0AC;
+    --gain:#8A6D2F;
+    --gain-fill:#C9A227;
+    --loss:#9B3B34;
+    --loss-fill:#C15147;
+    --accent:#1F4A44;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper:#14201D;
+      --paper-2:#192824;
+      --ink:#EDE6D6;
+      --ink-soft:#93A79C;
+      --rule:#2B3B37;
+      --gain:#D9B646;
+      --gain-fill:#C9A227;
+      --loss:#D97B72;
+      --loss-fill:#B5504B;
+      --accent:#7FBAA8;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14201D;
+    --paper-2:#192824;
+    --ink:#EDE6D6;
+    --ink-soft:#93A79C;
+    --rule:#2B3B37;
+    --gain:#D9B646;
+    --gain-fill:#C9A227;
+    --loss:#D97B72;
+    --loss-fill:#B5504B;
+    --accent:#7FBAA8;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+
+  .sheet{
+    max-width:1120px;
+    margin:0 auto;
+    padding:28px 20px 64px;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:16px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .masthead h1{
+    font-size:clamp(28px,4vw,40px);
+    margin:0;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .masthead .sub{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin-top:4px;
+  }
+  .masthead .period{
+    text-align:right;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .masthead .period .range{
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  /* ---------- Ledger strip (headline KPIs) ---------- */
+  .ledger{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    margin-bottom:36px;
+  }
+  .ledger .cell{
+    padding:16px 14px;
+    border-left:1px solid var(--rule);
+  }
+  .ledger .cell:first-child{ border-left:none; }
+  .ledger .label{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .ledger .value{
+    font-size:clamp(16px,2vw,22px);
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .ledger .value.gain{ color:var(--gain); }
+
+  @media (max-width:760px){
+    .ledger{ grid-template-columns:repeat(2,1fr); }
+    .ledger .cell:nth-child(2n+1){ border-left:none; }
+    .ledger .cell:nth-child(n+3){ border-top:1px solid var(--rule); }
+  }
+
+  /* ---------- Section headers ---------- */
+  .section{ margin-bottom:40px; }
+  .section h2{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--rule);
+  }
+
+  .grid-2{
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:28px;
+  }
+  @media (max-width:820px){ .grid-2{ grid-template-columns:1fr; } }
+
+  .panel{ position:relative; }
+  .chart-box{ position:relative; height:260px; }
+  .chart-box.tall{ height:320px; }
+
+  /* ---------- Bar list (region / category) ---------- */
+  .barlist .row{
+    display:grid;
+    grid-template-columns:88px 1fr 96px;
+    align-items:center;
+    gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:13.5px;
+  }
+  .barlist .row:last-child{ border-bottom:none; }
+  .barlist .track{
+    background:var(--paper-2);
+    height:8px;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .barlist .fill{
+    height:100%;
+    background:var(--gain-fill);
+    border-radius:2px;
+  }
+  .barlist .amt{ text-align:right; }
+
+  /* ---------- Table ---------- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  thead th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+    font-weight:600;
+    padding:0 10px 8px;
+    border-bottom:1px solid var(--ink);
+  }
+  tbody td{
+    padding:9px 10px;
+    border-bottom:1px solid var(--rule);
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  td.num, th.num{ text-align:right; }
+  .neg{ color:var(--loss); }
+  .pos{ color:var(--gain); }
+
+  .two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+  }
+  @media (max-width:760px){ .two-col{ grid-template-columns:1fr; } }
+
+  footer{
+    margin-top:8px;
+    padding-top:16px;
+    border-top:1px solid var(--rule);
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="masthead">
+    <div>
+      <h1>Sales Performance Ledger</h1>
+      <div class="sub">Revenue, margin and channel performance across all regions</div>
+    </div>
+    <div class="period">
+      Reporting period<br>
+      <span class="range" id="rangeLabel">—</span>
+    </div>
+  </div>
+
+  <div class="ledger mono" id="ledgerStrip"></div>
+
+  <div class="section">
+    <h2>Revenue &amp; Profit — Monthly</h2>
+    <div class="chart-box tall"><canvas id="trendChart"></canvas></div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="panel">
+      <h2>By Category</h2>
+      <div class="chart-box"><canvas id="categoryChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>By Region</h2>
+      <div class="barlist mono" id="regionList"></div>
+    </div>
+  </div>
+
+  <div class="section two-col">
+    <div class="panel">
+      <h2>Top Customers</h2>
+      <table class="mono">
+        <thead><tr><th>Customer</th><th>Segment</th><th class="num">Revenue</th><th class="num">Orders</th></tr></thead>
+        <tbody id="customerRows"></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>Discount Impact on Margin</h2>
+      <table class="mono">
+        <thead><tr><th>Band</th><th class="num">Avg Margin</th><th class="num">Revenue</th></tr></thead>
+        <tbody id="discountRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Customer Segment Mix</h2>
+    <div class="chart-box" style="height:120px;"><canvas id="segmentChart"></canvas></div>
+  </div>
+
+  <footer class="mono">
+    <span>Source: fact_sales (SQLite) via /api/* endpoints</span>
+    <span id="genLabel">—</span>
+  </footer>
+
+</div>
+
+<script>
+// ---- Embedded data snapshot (see backend/export_snapshot.py) ----
+// In production this dashboard fetches these same shapes live from the
+// Flask API (/api/summary, /api/monthly-trend, etc.) — see README for wiring.
+const DATA = {"summary": {"total_revenue": 1677328.46, "total_profit": 376167.48, "profit_margin_pct": 22.43, "total_orders": 4200, "avg_order_value": 399.36, "unique_customers": 160}, "monthly_trend": [{"order_ym": "2023-01", "revenue": 43165.27, "profit": 9240.6}, {"order_ym": "2023-02", "revenue": 30979.9, "profit": 6551.27}, {"order_ym": "2023-03", "revenue": 46507.9, "profit": 10631.88}, {"order_ym": "2023-04", "revenue": 31954.98, "profit": 7169.51}, {"order_ym": "2023-05", "revenue": 45971.07, "profit": 10097.02}, {"order_ym": "2023-06", "revenue": 56576.69, "profit": 11727.48}, {"order_ym": "2023-07", "revenue": 42645.65, "profit": 8579.82}, {"order_ym": "2023-08", "revenue": 45030.87, "profit": 10527.37}, {"order_ym": "2023-09", "revenue": 37165.19, "profit": 8510.07}, {"order_ym": "2023-10", "revenue": 49591.98, "profit": 10218.22}, {"order_ym": "2023-11", "revenue": 63026.17, "profit": 15818.49}, {"order_ym": "2023-12", "revenue": 73184.7, "profit": 15916.9}, {"order_ym": "2024-01", "revenue": 49526.32, "profit": 11001.88}, {"order_ym": "2024-02", "revenue": 22868.92, "profit": 5671.97}, {"order_ym": "2024-03", "revenue": 46056.27, "profit": 11257.68}, {"order_ym": "2024-04", "revenue": 40393.54, "profit": 9626.64}, {"order_ym": "2024-05", "revenue": 33019.71, "profit": 7217.12}, {"order_ym": "2024-06", "revenue": 26765.86, "profit": 5691.24}, {"order_ym": "2024-07", "revenue": 38270.23, "profit": 8988.51}, {"order_ym": "2024-08", "revenue": 47594.06, "profit": 10776.3}, {"order_ym": "2024-09", "revenue": 44609.73, "profit": 10604.38}, {"order_ym": "2024-10", "revenue": 47806.45, "profit": 11876.0}, {"order_ym": "2024-11", "revenue": 60206.44, "profit": 13835.01}, {"order_ym": "2024-12", "revenue": 82252.78, "profit": 18657.79}, {"order_ym": "2025-01", "revenue": 54200.72, "profit": 11315.84}, {"order_ym": "2025-02", "revenue": 36106.87, "profit": 6688.92}, {"order_ym": "2025-03", "revenue": 50035.33, "profit": 10958.96}, {"order_ym": "2025-04", "revenue": 50386.94, "profit": 11865.41}, {"order_ym": "2025-05", "revenue": 56152.21, "profit": 11779.44}, {"order_ym": "2025-06", "revenue": 33849.94, "profit": 8752.53}, {"order_ym": "2025-07", "revenue": 43970.02, "profit": 10251.82}, {"order_ym": "2025-08", "revenue": 31548.22, "profit": 6848.03}, {"order_ym": "2025-09", "revenue": 33548.02, "profit": 7369.6}, {"order_ym": "2025-10", "revenue": 52975.56, "profit": 11556.45}, {"order_ym": "2025-11", "revenue": 70719.17, "profit": 16011.87}, {"order_ym": "2025-12", "revenue": 58664.78, "profit": 12575.46}], "by_region": [{"region": "East", "revenue": 436134.88, "profit": 96504.63, "margin_pct": 22.13}, {"region": "Central", "revenue": 434595.38, "profit": 98095.53, "margin_pct": 22.57}, {"region": "South", "revenue": 412184.92, "profit": 89589.87, "margin_pct": 21.74}, {"region": "West", "revenue": 394413.28, "profit": 91977.45, "margin_pct": 23.32}], "by_category": [{"category": "Technology", "sub_category": "Phones", "revenue": 248701.0, "profit": 60487.81, "units_sold": 683}, {"category": "Technology", "sub_category": "Accessories", "revenue": 238410.08, "profit": 58216.5, "units_sold": 640}, {"category": "Technology", "sub_category": "Copiers", "revenue": 237934.31, "profit": 59516.97, "units_sold": 645}, {"category": "Technology", "sub_category": "Machines", "revenue": 227943.2, "profit": 53296.29, "units_sold": 613}, {"category": "Furniture", "sub_category": "Furnishings", "revenue": 151568.95, "profit": 20062.82, "units_sold": 686}, {"category": "Furniture", "sub_category": "Chairs", "revenue": 142848.15, "profit": 18306.87, "units_sold": 660}, {"category": "Furniture", "sub_category": "Bookcases", "revenue": 121296.11, "profit": 16619.72, "units_sold": 580}, {"category": "Furniture", "sub_category": "Tables", "revenue": 112801.69, "profit": 13822.59, "units_sold": 547}, {"category": "Office Supplies", "sub_category": "Art", "revenue": 42244.29, "profit": 16467.01, "units_sold": 1336}, {"category": "Office Supplies", "sub_category": "Paper", "revenue": 39605.01, "profit": 15216.19, "units_sold": 1210}, {"category": "Office Supplies", "sub_category": "Storage", "revenue": 38683.25, "profit": 14755.01, "units_sold": 1244}, {"category": "Office Supplies", "sub_category": "Labels", "revenue": 38298.35, "profit": 14941.27, "units_sold": 1192}, {"category": "Office Supplies", "sub_category": "Binders", "revenue": 36994.07, "profit": 14458.43, "units_sold": 1166}], "top_customers": [{"customer_name": "Maria Brown", "segment": "Consumer", "revenue": 16994.51, "profit": 3747.1, "orders": 19}, {"customer_name": "Maria Kim", "segment": "Consumer", "revenue": 13271.0, "profit": 2884.73, "orders": 18}, {"customer_name": "Wei Diaz", "segment": "Consumer", "revenue": 12522.47, "profit": 2394.61, "orders": 21}, {"customer_name": "Priya Khan", "segment": "Consumer", "revenue": 12247.44, "profit": 2355.45, "orders": 18}, {"customer_name": "Noah Diaz", "segment": "Consumer", "revenue": 12107.73, "profit": 2945.75, "orders": 15}, {"customer_name": "Sofia Nguyen", "segment": "Corporate", "revenue": 11428.35, "profit": 2391.88, "orders": 13}, {"customer_name": "Omar Brown", "segment": "Consumer", "revenue": 10721.95, "profit": 2849.73, "orders": 20}, {"customer_name": "Wei Rossi", "segment": "Consumer", "revenue": 10617.7, "profit": 2426.07, "orders": 19}, {"customer_name": "Priya Rossi", "segment": "Consumer", "revenue": 10439.46, "profit": 2305.01, "orders": 11}, {"customer_name": "Yuki Brown", "segment": "Consumer", "revenue": 10244.5, "profit": 2495.04, "orders": 18}], "segment_mix": [{"segment": "Consumer", "revenue": 857729.65, "pct_of_revenue": 51.1}, {"segment": "Corporate", "revenue": 530085.47, "pct_of_revenue": 31.6}, {"segment": "Home Office", "revenue": 289513.34, "pct_of_revenue": 17.3}], "discount_impact": [{"discount_band": "No discount", "avg_margin_pct": 37.08, "revenue": 839117.65}, {"discount_band": "Low (<=15%)", "avg_margin_pct": 28.21, "revenue": 563251.54}, {"discount_band": "Medium (16-30%)", "avg_margin_pct": 14.43, "revenue": 236591.57}, {"discount_band": "High (>30%)", "avg_margin_pct": -15.49, "revenue": 38367.7}]};
+
+const fmtUSD = n => '$' + Number(n).toLocaleString('en-US', {maximumFractionDigits:0});
+const fmtUSDk = n => {
+  const v = Number(n);
+  return (v>=1000 ? '$'+(v/1000).toFixed(1)+'k' : '$'+v.toFixed(0));
+};
+const monthLabel = ym => {
+  const [y,m] = ym.split('-');
+  return new Date(y, m-1, 1).toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+};
+
+function getVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+// ---------- Masthead range ----------
+const months = DATA.monthly_trend.map(r => r.order_ym);
+document.getElementById('rangeLabel').textContent =
+  monthLabel(months[0]) + ' – ' + monthLabel(months[months.length-1]);
+document.getElementById('genLabel').textContent =
+  'Snapshot · ' + months.length + ' months · ' + DATA.summary.total_orders + ' orders';
+
+// ---------- Ledger strip ----------
+const s = DATA.summary;
+const ledgerItems = [
+  ['Total Revenue', fmtUSD(s.total_revenue), false],
+  ['Total Profit', fmtUSD(s.total_profit), true],
+  ['Margin', s.profit_margin_pct.toFixed(1)+'%', true],
+  ['Orders', s.total_orders.toLocaleString(), false],
+  ['Avg Order Value', fmtUSD(s.avg_order_value), false],
+  ['Customers', s.unique_customers.toLocaleString(), false],
+];
+document.getElementById('ledgerStrip').innerHTML = ledgerItems.map(([label,val,gain]) => `
+  <div class="cell">
+    <div class="label">${label}</div>
+    <div class="value ${gain?'gain':''}">${val}</div>
+  </div>
+`).join('');
+
+// ---------- Trend chart ----------
+new Chart(document.getElementById('trendChart'), {
+  type:'line',
+  data:{
+    labels: DATA.monthly_trend.map(r => monthLabel(r.order_ym)),
+    datasets:[
+      {
+        label:'Revenue',
+        data: DATA.monthly_trend.map(r=>r.revenue),
+        borderColor: getVar('--ink'),
+        backgroundColor: 'transparent',
+        borderWidth:2,
+        pointRadius:0,
+        tension:0.25,
+      },
+      {
+        label:'Profit',
+        data: DATA.monthly_trend.map(r=>r.profit),
+        borderColor: getVar('--gain-fill'),
+        backgroundColor: 'rgba(201,162,39,0.15)',
+        borderWidth:2,
+        pointRadius:0,
+        tension:0.25,
+        fill:true,
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{ position:'top', align:'end', labels:{ color:getVar('--ink-soft'), font:{family:"'IBM Plex Mono'", size:11}, boxWidth:10 } },
+      tooltip:{
+        callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${fmtUSD(ctx.parsed.y)}` }
+      }
+    },
+    scales:{
+      x:{ grid:{ display:false }, ticks:{ color:getVar('--ink-soft'), font:{family:"'IBM Plex Mono'", size:10} } },
+      y:{ grid:{ color:getVar('--rule') }, ticks:{ color:getVar('--ink-soft'), font:{family:"'IBM Plex Mono'", size:10}, callback:v=>fmtUSDk(v) } }
+    }
+  }
+});
+
+// ---------- Category chart (horizontal bars, revenue by category, top sub-cats) ----------
+const cats = DATA.by_category.slice(0, 8);
+new Chart(document.getElementById('categoryChart'), {
+  type:'bar',
+  data:{
+    labels: cats.map(c => c.sub_category),
+    datasets:[{
+      data: cats.map(c => c.revenue),
+      backgroundColor: getVar('--gain-fill'),
+      borderRadius:2,
+      barThickness:14,
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => fmtUSD(ctx.parsed.x) } } },
+    scales:{
+      x:{ grid:{ color:getVar('--rule') }, ticks:{ color:getVar('--ink-soft'), font:{family:"'IBM Plex Mono'", size:10}, callback:v=>fmtUSDk(v) } },
+      y:{ grid:{ display:false }, ticks:{ color:getVar('--ink'), font:{family:"'Source Serif 4'", size:12} } }
+    }
+  }
+});
+
+// ---------- Region bar list ----------
+const maxRegionRev = Math.max(...DATA.by_region.map(r=>r.revenue));
+document.getElementById('regionList').innerHTML = DATA.by_region.map(r => `
+  <div class="row">
+    <div>${r.region}</div>
+    <div class="track"><div class="fill" style="width:${(r.revenue/maxRegionRev*100).toFixed(0)}%"></div></div>
+    <div class="amt">${fmtUSDk(r.revenue)}</div>
+  </div>
+`).join('') + `<div style="margin-top:10px;font-size:11px;color:${getVar('--ink-soft')}">Margin: ` +
+  DATA.by_region.map(r=>`${r.region} ${r.margin_pct}%`).join(' · ') + `</div>`;
+
+// ---------- Top customers table ----------
+document.getElementById('customerRows').innerHTML = DATA.top_customers.map(c => `
+  <tr>
+    <td>${c.customer_name}</td>
+    <td>${c.segment}</td>
+    <td class="num">${fmtUSD(c.revenue)}</td>
+    <td class="num">${c.orders}</td>
+  </tr>
+`).join('');
+
+// ---------- Discount impact table ----------
+document.getElementById('discountRows').innerHTML = DATA.discount_impact.map(d => `
+  <tr>
+    <td>${d.discount_band}</td>
+    <td class="num ${d.avg_margin_pct<0?'neg':'pos'}">${d.avg_margin_pct.toFixed(1)}%</td>
+    <td class="num">${fmtUSD(d.revenue)}</td>
+  </tr>
+`).join('');
+
+// ---------- Segment mix (horizontal stacked bar) ----------
+new Chart(document.getElementById('segmentChart'), {
+  type:'bar',
+  data:{
+    labels:['Share of revenue'],
+    datasets: DATA.segment_mix.map((seg,i) => ({
+      label: `${seg.segment} (${seg.pct_of_revenue}%)`,
+      data: [seg.revenue],
+      backgroundColor: [getVar('--gain-fill'), getVar('--accent'), getVar('--rule')][i % 3],
+      borderRadius:2,
+    }))
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{ stacked:true, display:false },
+      y:{ stacked:true, display:false }
+    },
+    plugins:{
+      legend:{ position:'bottom', labels:{ color:getVar('--ink-soft'), font:{family:"'IBM Plex Mono'", size:11}, boxWidth:10 } },
+      tooltip:{ callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${fmtUSD(ctx.parsed.x)}` } }
+    }
+  }
+});
+</script>
+</body>
+</html>
